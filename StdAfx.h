@@ -55,6 +55,8 @@
 #include <windows.h>
 #define JKNULL	NULL
 #else
+#define FAR
+#define cdecl
 #ifndef JKNULL
 #ifdef __cplusplus
 #define JKNULL    0

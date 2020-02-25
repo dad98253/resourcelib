@@ -17,6 +17,7 @@
 
 #include "StdAfx.h"
 #include <stdio.h>
+#include <errno.h>
 
 #include "Resources.h"
 
@@ -59,7 +60,9 @@ BOOL LoadResources()
 	fResourceFile = fopen ("passwintestnew.rc","rt");
 	if (fResourceFile == NULL)
 	  {
-	    printf("LoadResources failed to open resource file\n");
+		int myerr = errno;
+		perror("LoadResources failed to open resource file");
+	    printf("LoadResources failed to open resource file, system error number = %i\n",myerr);
 	    return(TRUE);
 	  }
 #ifdef DEBUG
@@ -96,16 +99,17 @@ BOOL LoadResources()
 			  WinFprintf(fp9,"nParse = %i\n",nParse);
 #endif
 		if ((nParse=ParseLineRC(ctemp))<1)continue;
+#if defined(DEBUGLOADRESOURCES) || defined(DEBUGPARSE)
+		int i;
+#endif
 #ifdef DEBUGLOADRESOURCES
 		WinFprintf(fp9,"found %i items\n",nParse);
-		int i;
 		for (i=0;i<nParse;i++){
 			WinFprintf(fp9,"item[%i] (fmt %i) = %s\n",i,ParseLineRCfmtItem[i],ParseLineRCItems[i]);
 		}
 #endif
 #ifdef DEBUGPARSE
 		WinFprintf(fp9,"%i fields(fmt) = ",nParse);
-		int i;
 		for (i=0;i<nParse;i++){
 			WinFprintf(fp9,"%s(%i); ",ParseLineRCItems[i],ParseLineRCfmtItem[i]);
 		}
